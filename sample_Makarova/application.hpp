@@ -16,7 +16,8 @@ class Application
     {
         OnFilter,
         OffFilter,
-        OnSave
+        OnSave,
+        OnGrey
     };
     struct Parameters
     {
@@ -28,18 +29,22 @@ class Application
         cv::Rect onButtonPlace;
         cv::Rect offButtonPlace;
         cv::Rect onSavePlace;
-    };
+        cv::Rect onGreyPlace;
+     };
     int parseArguments(int argc, const char **argv, Parameters &params);
     int getFrame(const std::string &fileName, cv::Mat& src);
     int processFrame(const cv::Mat& src, cv::Mat& dst);
+    int processGrey(const cv::Mat& src, cv::Mat& dst);
     int showFrame(const std::string &caption, 
                   const cv::Mat& src, cv::Mat& dst);
     friend void onButtonsOnOffClick(int eventId, int x, int y, 
                                     int flags, void *userData);
     Application() 
     { 
+        
         guiState.state = OnFilter;
         isOnSave = false;
+        isOnGrey = false;
     };
 
  private:
@@ -47,6 +52,7 @@ class Application
     GUIElementsState guiState;
 
     bool isOnSave;
+    bool isOnGrey;
     int drawButtons(cv::Mat &display);
     
     friend bool onButtonClicked(cv::Rect buttonPlace, int x, int y);

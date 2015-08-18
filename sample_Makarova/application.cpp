@@ -38,16 +38,31 @@ int Application::processFrame(const Mat& src, Mat& dst)
     return 0;
 }
 
+int Application::processGrey(const Mat& src, Mat& dst)
+{
+    processor.processGrey(src, dst);
+
+    if (dst.empty())
+    {
+        return 1;
+    }
+
+    return 0;
+}
+
 int Application::drawButtons(Mat &display)
 {
     guiState.onButtonPlace = Rect(20, display.rows - 60, 120, 40);
     guiState.offButtonPlace = Rect(160, display.rows - 60, 120, 40);
     guiState.onSavePlace = Rect(300, display.rows - 60, 120, 40);
+    guiState.onGreyPlace = Rect(20, display.rows - 120, 120, 40);
     rectangle(display, guiState.onButtonPlace, 
               Scalar(128, 128, 128), CV_FILLED);
     rectangle(display, guiState.offButtonPlace, 
               Scalar(128, 128, 128), CV_FILLED);
      rectangle(display, guiState.onSavePlace, 
+              Scalar(128, 128, 128), CV_FILLED);
+      rectangle(display, guiState.onGreyPlace, 
               Scalar(128, 128, 128), CV_FILLED);
 
     putText(display, "on", 
@@ -61,6 +76,10 @@ int Application::drawButtons(Mat &display)
     putText(display, "save", 
         Point(guiState.onSavePlace.x + guiState.onSavePlace.width / 2 - 20,
               guiState.onSavePlace.y + guiState.onSavePlace.height / 2 + 10),
+        FONT_HERSHEY_SIMPLEX, 1.0, Scalar(0, 0, 0), 2);
+    putText(display, "Grey", 
+        Point(guiState.onGreyPlace.x + guiState.onGreyPlace.width / 2 - 20,
+              guiState.onGreyPlace.y + guiState.onGreyPlace.height / 2 + 10),
         FONT_HERSHEY_SIMPLEX, 1.0, Scalar(0, 0, 0), 2);
 
     return 0;
@@ -82,6 +101,9 @@ int Application::showFrame(const std::string &caption,
         isOnSave = true;
         guiState.state = OnFilter;
     }
+    else if(guiState.state == OnGrey){
+        processGrey(src, dst);
+     }
     else
     {
         return 1;
@@ -99,6 +121,8 @@ int Application::showFrame(const std::string &caption,
         imwrite("save.png", display);
         isOnSave = false;
     }
+
+    
     drawButtons(display);
     
     namedWindow(caption);  
@@ -131,6 +155,11 @@ void onButtonsOnOffClick(int eventId, int x, int y, int flags, void *userData)
         elems->state = Application::OnSave;
         return;
     }
+    if(onButtonClicked(elems->onGreyPlace, x, y)){
+        elems->state = Application::OnGrey;
+        return;
+    }
+
 }
 
 bool onButtonClicked(cv::Rect buttonPlace, int x, int y)
