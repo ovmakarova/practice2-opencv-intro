@@ -20,6 +20,8 @@ set(LIBRARY_DEPS ${OpenCV_LIBS})
 add_subdirectory(sample_template)
 # Add you directory here
 # add_subdirectory(sample_YOUR_NAME)
+add_subdirectory(sample_Makarova)
+
 
 # REPORT
 message( STATUS "")
