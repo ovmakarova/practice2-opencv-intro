@@ -50,12 +50,25 @@ int Application::processGrey(const Mat& src, Mat& dst)
     return 0;
 }
 
+int Application::processCanny(const Mat& src, Mat& dst)
+{
+    processor.processCanny(src, dst);
+
+    if (dst.empty())
+    {
+        return 1;
+    }
+
+    return 0;
+}
+
 int Application::drawButtons(Mat &display)
 {
     guiState.onButtonPlace = Rect(20, display.rows - 60, 120, 40);
     guiState.offButtonPlace = Rect(160, display.rows - 60, 120, 40);
     guiState.onSavePlace = Rect(300, display.rows - 60, 120, 40);
     guiState.onGreyPlace = Rect(20, display.rows - 120, 120, 40);
+    guiState.onCannyPlace = Rect(160, display.rows - 120, 120, 40);
     rectangle(display, guiState.onButtonPlace, 
               Scalar(128, 128, 128), CV_FILLED);
     rectangle(display, guiState.offButtonPlace, 
@@ -63,6 +76,8 @@ int Application::drawButtons(Mat &display)
      rectangle(display, guiState.onSavePlace, 
               Scalar(128, 128, 128), CV_FILLED);
       rectangle(display, guiState.onGreyPlace, 
+              Scalar(128, 128, 128), CV_FILLED);
+       rectangle(display, guiState.onCannyPlace, 
               Scalar(128, 128, 128), CV_FILLED);
 
     putText(display, "on", 
@@ -80,6 +95,10 @@ int Application::drawButtons(Mat &display)
     putText(display, "Grey", 
         Point(guiState.onGreyPlace.x + guiState.onGreyPlace.width / 2 - 20,
               guiState.onGreyPlace.y + guiState.onGreyPlace.height / 2 + 10),
+        FONT_HERSHEY_SIMPLEX, 1.0, Scalar(0, 0, 0), 2);
+     putText(display, "Canny", 
+        Point(guiState.onCannyPlace.x + guiState.onCannyPlace.width / 2 - 20,
+              guiState.onCannyPlace.y + guiState.onCannyPlace.height / 2 + 10),
         FONT_HERSHEY_SIMPLEX, 1.0, Scalar(0, 0, 0), 2);
 
     return 0;
@@ -104,6 +123,9 @@ int Application::showFrame(const std::string &caption,
     else if(guiState.state == OnGrey){
         processGrey(src, dst);
      }
+    else if(guiState.state == OnCanny){
+        processCanny(src, dst);
+    }
     else
     {
         return 1;
@@ -157,6 +179,10 @@ void onButtonsOnOffClick(int eventId, int x, int y, int flags, void *userData)
     }
     if(onButtonClicked(elems->onGreyPlace, x, y)){
         elems->state = Application::OnGrey;
+        return;
+    }
+    if(onButtonClicked(elems->onCannyPlace, x, y)){
+        elems->state = Application::OnCanny;
         return;
     }
 
