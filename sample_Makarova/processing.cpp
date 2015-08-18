@@ -11,8 +11,8 @@ void Processing::processFrame(const cv::Mat& src, cv::Mat& dst)
     src.copyTo(dst);
 
     srand(time(NULL));
-    int x0 = rand()%src.rows-1;
-    int y0 = rand()%src.cols-1;
+    int x0 = rand()%src.rows;
+    int y0 = rand()%src.cols;
 
     while((x0+x0+100 > 500) || (y0+y0+100> 500)){
         x0 = rand()%src.rows-1;
